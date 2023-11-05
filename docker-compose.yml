@@ -1,0 +1,9 @@
+version: '3'
+services:
+  asteroidsapp:
+    image: openjdk:8
+    build:
+      context: ./Asteroids
+    volumes:
+      - ./Asteroids/Asteroids:/app
+    

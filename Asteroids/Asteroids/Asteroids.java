@@ -19,6 +19,7 @@ Asteroids.java
 import java.awt.*;
 import java.net.*;
 import java.util.*;
+import java.awt.event.KeyEvent;
 import java.applet.Applet;
 import java.applet.AudioClip;
 
@@ -104,10 +105,10 @@ class AsteroidsSprite {
     // of one sprite lands inside the other.
 
     for (i = 0; i < s.sprite.npoints; i++)
-      if (this.sprite.inside(s.sprite.xpoints[i], s.sprite.ypoints[i]))
+      if (this.sprite.contains(s.sprite.xpoints[i], s.sprite.ypoints[i]))
         return true;
     for (i = 0; i < this.sprite.npoints; i++)
-      if (s.sprite.inside(this.sprite.xpoints[i], this.sprite.ypoints[i]))
+      if (s.sprite.contains(this.sprite.xpoints[i], this.sprite.ypoints[i]))
         return true;
     return false;
   }
@@ -118,6 +119,8 @@ class AsteroidsSprite {
 ************************************************************************************************/
 
 public class Asteroids extends Applet implements Runnable {
+
+  // static final long serialVersionUID = 1L;
 
   // Thread control variables.
 
@@ -269,7 +272,7 @@ public class Asteroids extends Applet implements Runnable {
     // Find the size of the screen and set the values for sprites.
 
     g = getGraphics();
-    d = size();
+    d = getSize();
     AsteroidsSprite.width = d.width;
     AsteroidsSprite.height = d.height;
 
@@ -392,11 +395,11 @@ public class Asteroids extends Applet implements Runnable {
   public void stop() {
 
     if (loopThread != null) {
-      loopThread.stop();
+      loopThread.interrupt();
       loopThread = null;
     }
     if (loadThread != null) {
-      loadThread.stop();
+      loadThread.interrupt();
       loadThread = null;
     }
   }
@@ -416,7 +419,7 @@ public class Asteroids extends Applet implements Runnable {
     if (!loaded && Thread.currentThread() == loadThread) {
       loadSounds();
       loaded = true;
-      loadThread.stop();
+      loadThread.interrupt();
     }
 
     // This is the main loop.
@@ -986,17 +989,17 @@ public class Asteroids extends Applet implements Runnable {
       }
   }
 
-  public boolean keyDown(Event e, int key) {
+  public boolean keyDown(KeyEvent e, int key) {
 
     // Check if any cursor keys have been pressed and set flags.
 
-    if (key == Event.LEFT)
+    if (key == KeyEvent.VK_LEFT)
       left = true;
-    if (key == Event.RIGHT)
+    if (key == KeyEvent.VK_RIGHT)
       right = true;
-    if (key == Event.UP)
+    if (key == KeyEvent.VK_UP)
       up = true;
-    if (key == Event.DOWN)
+    if (key == KeyEvent.VK_DOWN)
       down = true;
 
     if ((up || down) && ship.active && !thrustersPlaying) {
@@ -1089,17 +1092,17 @@ public class Asteroids extends Applet implements Runnable {
     return true;
   }
 
-  public boolean keyUp(Event e, int key) {
+  public boolean keyUp(KeyEvent e, int key) {
 
     // Check if any cursor keys where released and set flags.
 
-    if (key == Event.LEFT)
+    if (key == KeyEvent.VK_LEFT)
       left = false;
-    if (key == Event.RIGHT)
+    if (key == KeyEvent.VK_RIGHT)
       right = false;
-    if (key == Event.UP)
+    if (key == KeyEvent.VK_UP)
       up = false;
-    if (key == Event.DOWN)
+    if (key == KeyEvent.VK_DOWN)
       down = false;
 
     if (!up && !down && thrustersPlaying) {
@@ -1118,7 +1121,7 @@ public class Asteroids extends Applet implements Runnable {
 
   public void update(Graphics g) {
 
-    Dimension d = size();
+    Dimension d = getSize();
     int i;
     int c;
     String s;
